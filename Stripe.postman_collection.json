@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "960f779d-0105-4d9d-9d03-b18e47ccbf5b",
+		"_postman_id": "0c320abb-cf0b-44cd-be6f-f41bffa0e4e0",
 		"name": "Stripe",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "7157654"
@@ -17,10 +17,10 @@
 							"script": {
 								"exec": [
 									"const jsonData = JSON.parse(responseBody);\r",
-									"postman.setEnvironmentVariable(\"testClockId\", jsonData.id);\r",
-									"postman.setEnvironmentVariable(\"customerId\", \"\");\r",
-									"postman.setEnvironmentVariable(\"subscriptionId\", \"\");\r",
-									"postman.setEnvironmentVariable(\"subscriptionScheduleId\", \"\");"
+									"pm.collectionVariables.set(\"test_clock_id\", jsonData.id);\r",
+									"pm.collectionVariables.set(\"customer_id\", \"\");\r",
+									"pm.collectionVariables.set(\"subscription_id\", \"\");\r",
+									"pm.collectionVariables.set(\"subscription_schedule_id\", \"\");"
 								],
 								"type": "text/javascript"
 							}
@@ -30,7 +30,7 @@
 							"script": {
 								"exec": [
 									"const today = new Date();\r",
-									"postman.setEnvironmentVariable('frozenTime', Math.floor(today / 1000));"
+									"pm.collectionVariables.set('frozen_time', Math.floor(today / 1000));"
 								],
 								"type": "text/javascript"
 							}
@@ -41,7 +41,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"frozen_time\": \"{{frozenTime}}\",\r\n    \"name\": \"Case 1\"\r\n}",
+							"raw": "{\r\n    \"frozen_time\": \"{{frozen_time}}\",\r\n    \"name\": \"Case 1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -49,11 +49,10 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/test-clocks",
+							"raw": "{{base_url}}/test-clocks",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "3000",
 							"path": [
 								"test-clocks"
 							]
@@ -77,10 +76,10 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"const frozenTime = pm.variables.get('frozenTime');\r",
-									"const advanceFrozenTime = new Date(frozenTime * 1000);\r",
-									"advanceFrozenTime.setDate(advanceFrozenTime.getDate() + 5);\r",
-									"postman.setEnvironmentVariable('frozenTime', Math.floor(advanceFrozenTime / 1000));"
+									"const frozen_time = pm.variables.get('frozen_time');\r",
+									"const advancefrozen_time = new Date(frozen_time * 1000);\r",
+									"advancefrozen_time.setDate(advancefrozen_time.getDate() + 5);\r",
+									"pm.collectionVariables.set('frozen_time', Math.floor(advancefrozen_time / 1000));"
 								],
 								"type": "text/javascript"
 							}
@@ -91,7 +90,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"frozen_time\": \"{{frozenTime}}\"\r\n}",
+							"raw": "{\r\n    \"frozen_time\": \"{{frozen_time}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -99,14 +98,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/test-clocks/{{testClockId}}",
+							"raw": "{{base_url}}/test-clocks/{{test_clock_id}}",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "3000",
 							"path": [
 								"test-clocks",
-								"{{testClockId}}"
+								"{{test_clock_id}}"
 							]
 						}
 					},
@@ -119,11 +117,11 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"postman.setEnvironmentVariable(\"testClockId\", \"\");\r",
-									"postman.setEnvironmentVariable(\"customerId\", \"\");\r",
-									"postman.setEnvironmentVariable(\"subscriptionId\", \"\");\r",
-									"postman.setEnvironmentVariable(\"subscriptionScheduleId\", \"\");\r",
-									"postman.setEnvironmentVariable(\"frozenTime\", \"\");"
+									"pm.collectionVariables.set(\"test_clock_id\", \"\");\r",
+									"pm.collectionVariables.set(\"customer_id\", \"\");\r",
+									"pm.collectionVariables.set(\"subscription_id\", \"\");\r",
+									"pm.collectionVariables.set(\"subscription_schedule_id\", \"\");\r",
+									"pm.collectionVariables.set(\"frozen_time\", \"\");"
 								],
 								"type": "text/javascript"
 							}
@@ -146,14 +144,13 @@
 							"urlencoded": []
 						},
 						"url": {
-							"raw": "localhost:3000/test-clocks/{{testClockId}}",
+							"raw": "{{base_url}}/test-clocks/{{test_clock_id}}",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "3000",
 							"path": [
 								"test-clocks",
-								"{{testClockId}}"
+								"{{test_clock_id}}"
 							]
 						}
 					},
@@ -172,7 +169,7 @@
 							"script": {
 								"exec": [
 									"const jsonData = JSON.parse(responseBody);\r",
-									"postman.setEnvironmentVariable(\"customerId\", jsonData.id);"
+									"pm.collectionVariables.set(\"customer_id\", jsonData.id);"
 								],
 								"type": "text/javascript"
 							}
@@ -183,7 +180,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"lorem.ipsum@test.com\",\r\n    \"test_clock\": \"{{testClockId}}\",\r\n    \"payment_method\": \"pm_card_visa\",\r\n    \"invoice_settings\": {\r\n        \"default_payment_method\": \"pm_card_visa\"\r\n    }\r\n}",
+							"raw": "{\r\n    \"email\": \"lorem.ipsum@test.com\",\r\n    \"test_clock\": \"{{test_clock_id}}\",\r\n    \"payment_method\": \"pm_card_visa\",\r\n    \"invoice_settings\": {\r\n        \"default_payment_method\": \"pm_card_visa\"\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -191,11 +188,10 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/customers",
+							"raw": "{{base_url}}/customers",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "3000",
 							"path": [
 								"customers"
 							]
@@ -216,7 +212,7 @@
 							"script": {
 								"exec": [
 									"const jsonData = JSON.parse(responseBody);\r",
-									"postman.setEnvironmentVariable(\"subscriptionId\", jsonData.id);"
+									"pm.collectionVariables.set(\"subscription_id\", jsonData.id);"
 								],
 								"type": "text/javascript"
 							}
@@ -227,7 +223,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"customer\": \"{{customerId}}\",\r\n    \"items\": [\r\n        {\r\n            \"price\": \"price_1NybrkLAtDnOXbR0qKXtLuQJ\",\r\n            \"quantity\": 1\r\n        }\r\n    ],\r\n    \"expand\": [\r\n        \"latest_invoice.payment_intent\"\r\n    ]\r\n}",
+							"raw": "{\r\n    \"customer\": \"{{customer_id}}\",\r\n    \"items\": [\r\n        {\r\n            \"price\": \"price_1NybrkLAtDnOXbR0qKXtLuQJ\",\r\n            \"quantity\": 1\r\n        }\r\n    ],\r\n    \"expand\": [\r\n        \"latest_invoice.payment_intent\"\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -235,11 +231,10 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/subscriptions",
+							"raw": "{{base_url}}/subscriptions",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "3000",
 							"path": [
 								"subscriptions"
 							]
@@ -273,14 +268,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/subscriptions/{{subscriptionId}}",
+							"raw": "{{base_url}}/subscriptions/{{subscription_id}}",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "3000",
 							"path": [
 								"subscriptions",
-								"{{subscriptionId}}"
+								"{{subscription_id}}"
 							]
 						}
 					},
@@ -294,7 +288,7 @@
 							"script": {
 								"exec": [
 									"const jsonData = JSON.parse(responseBody);\r",
-									"postman.setEnvironmentVariable(\"subscriptionScheduleId\", jsonData.id);"
+									"pm.collectionVariables.set(\"subscription_schedule_id\", jsonData.id);"
 								],
 								"type": "text/javascript"
 							}
@@ -305,7 +299,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"from_subscription\": \"{{subscriptionId}}\"\r\n}",
+							"raw": "{\r\n    \"from_subscription\": \"{{subscription_id}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -313,11 +307,10 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/subscriptions/subscription-schedule",
+							"raw": "{{base_url}}/subscriptions/subscription-schedule",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "3000",
 							"path": [
 								"subscriptions",
 								"subscription-schedule"
@@ -355,14 +348,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/subscriptions/{{subscriptionId}}",
+							"raw": "{{base_url}}/subscriptions/{{subscription_id}}",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "3000",
 							"path": [
 								"subscriptions",
-								"{{subscriptionId}}"
+								"{{subscription_id}}"
 							]
 						}
 					},
@@ -399,14 +391,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/subscriptions/{{subscriptionId}}",
+							"raw": "{{base_url}}/subscriptions/{{subscription_id}}",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "3000",
 							"path": [
 								"subscriptions",
-								"{{subscriptionId}}"
+								"{{subscription_id}}"
 							]
 						}
 					},
@@ -432,14 +423,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/subscription-schedules/{{subscriptionScheduleId}}",
+							"raw": "{{base_url}}/subscription-schedules/{{subscription_schedule_id}}",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "3000",
 							"path": [
 								"subscription-schedules",
-								"{{subscriptionScheduleId}}"
+								"{{subscription_schedule_id}}"
 							]
 						}
 					},
@@ -463,14 +453,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/subscription-schedules/{{subscriptionScheduleId}}",
+							"raw": "{{base_url}}/subscription-schedules/{{subscription_schedule_id}}",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "3000",
 							"path": [
 								"subscription-schedules",
-								"{{subscriptionScheduleId}}"
+								"{{subscription_schedule_id}}"
 							]
 						}
 					},
@@ -488,7 +477,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"customer\": \"{{customerId}}\",\r\n    \"subscription\": \"{{subscriptionId}}\",\r\n    \"subscription_items\": [\r\n        {\r\n            \"id\": \"si_Omg5EPfzWdtEbu\", // Plan\r\n            \"quantity\": 10\r\n        },\r\n        {\r\n            \"price\": \"price_1NybtPLAtDnOXbR0u4PooKn1\", // RTG Addon\r\n            \"quantity\": 40\r\n        },\r\n        {\r\n            \"price\": \"price_1NyspPLAtDnOXbR0kRqnvP4N\", // Creator Seats\r\n            \"quantity\": 10\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"customer\": \"{{customer_id}}\",\r\n    \"subscription\": \"{{subscription_id}}\",\r\n    \"subscription_items\": [\r\n        {\r\n            \"id\": \"si_Omg5EPfzWdtEbu\", // Plan\r\n            \"quantity\": 10\r\n        },\r\n        {\r\n            \"price\": \"price_1NybtPLAtDnOXbR0u4PooKn1\", // RTG Addon\r\n            \"quantity\": 40\r\n        },\r\n        {\r\n            \"price\": \"price_1NyspPLAtDnOXbR0kRqnvP4N\", // Creator Seats\r\n            \"quantity\": 10\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -496,11 +485,10 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/invoices/upcoming",
+							"raw": "{{base_url}}/invoices/upcoming",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "3000",
 							"path": [
 								"invoices",
 								"upcoming"
@@ -510,6 +498,28 @@
 					"response": []
 				}
 			]
+		}
+	],
+	"variable": [
+		{
+			"key": "frozen_time",
+			"value": ""
+		},
+		{
+			"key": "test_clock_id",
+			"value": ""
+		},
+		{
+			"key": "customer_id",
+			"value": ""
+		},
+		{
+			"key": "subscription_id",
+			"value": ""
+		},
+		{
+			"key": "subscription_schedule_id",
+			"value": ""
 		}
 	]
 }
