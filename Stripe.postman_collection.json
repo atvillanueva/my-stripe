@@ -1,0 +1,515 @@
+{
+	"info": {
+		"_postman_id": "960f779d-0105-4d9d-9d03-b18e47ccbf5b",
+		"name": "Stripe",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7157654"
+	},
+	"item": [
+		{
+			"name": "Test Clocks",
+			"item": [
+				{
+					"name": "Create Test Clock",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"testClockId\", jsonData.id);\r",
+									"postman.setEnvironmentVariable(\"customerId\", \"\");\r",
+									"postman.setEnvironmentVariable(\"subscriptionId\", \"\");\r",
+									"postman.setEnvironmentVariable(\"subscriptionScheduleId\", \"\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const today = new Date();\r",
+									"postman.setEnvironmentVariable('frozenTime', Math.floor(today / 1000));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"frozen_time\": \"{{frozenTime}}\",\r\n    \"name\": \"Case 1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/test-clocks",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"test-clocks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Advance Test Clock",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const frozenTime = pm.variables.get('frozenTime');\r",
+									"const advanceFrozenTime = new Date(frozenTime * 1000);\r",
+									"advanceFrozenTime.setDate(advanceFrozenTime.getDate() + 5);\r",
+									"postman.setEnvironmentVariable('frozenTime', Math.floor(advanceFrozenTime / 1000));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"frozen_time\": \"{{frozenTime}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/test-clocks/{{testClockId}}",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"test-clocks",
+								"{{testClockId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Test Clock",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"postman.setEnvironmentVariable(\"testClockId\", \"\");\r",
+									"postman.setEnvironmentVariable(\"customerId\", \"\");\r",
+									"postman.setEnvironmentVariable(\"subscriptionId\", \"\");\r",
+									"postman.setEnvironmentVariable(\"subscriptionScheduleId\", \"\");\r",
+									"postman.setEnvironmentVariable(\"frozenTime\", \"\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "localhost:3000/test-clocks/{{testClockId}}",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"test-clocks",
+								"{{testClockId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Customers",
+			"item": [
+				{
+					"name": "Create Customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"customerId\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"lorem.ipsum@test.com\",\r\n    \"test_clock\": \"{{testClockId}}\",\r\n    \"payment_method\": \"pm_card_visa\",\r\n    \"invoice_settings\": {\r\n        \"default_payment_method\": \"pm_card_visa\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/customers",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"customers"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subscriptions",
+			"item": [
+				{
+					"name": "Create Subscription",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"subscriptionId\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"customer\": \"{{customerId}}\",\r\n    \"items\": [\r\n        {\r\n            \"price\": \"price_1NybrkLAtDnOXbR0qKXtLuQJ\",\r\n            \"quantity\": 1\r\n        }\r\n    ],\r\n    \"expand\": [\r\n        \"latest_invoice.payment_intent\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/subscriptions",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"subscriptions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Subscription",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    // Use \"SUNSCRIPTION ITEM ID\" from stripe to update the quantity of the product\r\n    // Use \"PRICING API ID\" from stripe to add a new product into subscription \r\n    \"items\": [\r\n        {\r\n            \"price\": \"price_1NybtPLAtDnOXbR0u4PooKn1\", // RTG Addon\r\n            \"quantity\": 40\r\n        },\r\n        {\r\n            \"price\": \"price_1NyspPLAtDnOXbR0kRqnvP4N\", // Creator Seats\r\n            \"quantity\": 10\r\n        }\r\n    ],\r\n    \"expand\": [\r\n        \"latest_invoice.payment_intent\"\r\n    ],\r\n    \"off_session\": \"true\",\r\n    \"enable_incomplete_payments\": \"false\",\r\n    \"proration_behavior\": \"always_invoice\" // create_prorations | always_invoice\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/subscriptions/{{subscriptionId}}",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"subscriptions",
+								"{{subscriptionId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Subscription Schedule",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"subscriptionScheduleId\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"from_subscription\": \"{{subscriptionId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/subscriptions/subscription-schedule",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"subscriptions",
+								"subscription-schedule"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Subscription",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/subscriptions/{{subscriptionId}}",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"subscriptions",
+								"{{subscriptionId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subscription Items",
+			"item": [
+				{
+					"name": "Update Subscription Item",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n    // Use \"SUNSCRIPTION ITEM ID\" from stripe to update the quantity of the product\r\n    // Use \"PRICING API ID\" from stripe to add a new product into subscription \r\n    \"items\": [\r\n        {\r\n            \"id\": \"si_OmBL7N5EHMBXqB\",\r\n            \"quantity\": 50\r\n        }\r\n    ],\r\n    \"expand\": [\r\n        \"latest_invoice.payment_intent\"\r\n    ],\r\n    \"off_session\": \"true\",\r\n    \"enable_incomplete_payments\": \"false\",\r\n    \"proration_behavior\": \"always_invoice\" // create_prorations | always_invoice\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/subscriptions/{{subscriptionId}}",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"subscriptions",
+								"{{subscriptionId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subscription Schedules",
+			"item": [
+				{
+					"name": "Update Subscription Schedule",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"proration_behavior\": \"always_invoice\",\r\n    \"end_behavior\": \"release\",\r\n    \"phases\": [\r\n        {\r\n            \"proration_behavior\": \"always_invoice\",\r\n            \"start_date\": 1696807829,\r\n            \"end_date\": 1699486229,\r\n            \"items\": [\r\n                {\r\n                    \"price\": \"price_1NybrkLAtDnOXbR0qKXtLuQJ\", // Plan\r\n                    \"quantity\": 1\r\n                },\r\n                {\r\n                    \"price\": \"price_1NybtPLAtDnOXbR0u4PooKn1\", // RTG Addon\r\n                    \"quantity\": 40\r\n                },\r\n                {\r\n                    \"price\": \"price_1NyspPLAtDnOXbR0kRqnvP4N\", // Creator Seats\r\n                    \"quantity\": 10\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"proration_behavior\": \"always_invoice\",\r\n            \"items\": [\r\n                {\r\n                    \"price\": \"price_1NybrkLAtDnOXbR0qKXtLuQJ\", // Plan\r\n                    \"quantity\": 1\r\n                },\r\n                {\r\n                    \"price\": \"price_1NyspPLAtDnOXbR0kRqnvP4N\", // Creator Seats\r\n                    \"quantity\": 5\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/subscription-schedules/{{subscriptionScheduleId}}",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"subscription-schedules",
+								"{{subscriptionScheduleId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Subscription Schedule",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/subscription-schedules/{{subscriptionScheduleId}}",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"subscription-schedules",
+								"{{subscriptionScheduleId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Invoices",
+			"item": [
+				{
+					"name": "Retrieve Upcoming Invoice",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"customer\": \"{{customerId}}\",\r\n    \"subscription\": \"{{subscriptionId}}\",\r\n    \"subscription_items\": [\r\n        {\r\n            \"id\": \"si_Omg5EPfzWdtEbu\", // Plan\r\n            \"quantity\": 10\r\n        },\r\n        {\r\n            \"price\": \"price_1NybtPLAtDnOXbR0u4PooKn1\", // RTG Addon\r\n            \"quantity\": 40\r\n        },\r\n        {\r\n            \"price\": \"price_1NyspPLAtDnOXbR0kRqnvP4N\", // Creator Seats\r\n            \"quantity\": 10\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/invoices/upcoming",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"invoices",
+								"upcoming"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
