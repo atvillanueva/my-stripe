@@ -267,7 +267,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    // Use \"SUNSCRIPTION ITEM ID\" from stripe to update the quantity of the product\r\n    // Use \"PRICING API ID\" from stripe to add a new product into subscription\r\n    \"items\": [\r\n        {\r\n            \"price\": \"price_1NybtPLAtDnOXbR0u4PooKn1\",\r\n            \"quantity\": 40\r\n        },\r\n        {\r\n            \"price\": \"price_1NyspPLAtDnOXbR0kRqnvP4N\",\r\n            \"quantity\": 10\r\n        }\r\n    ],\r\n    \"expand\": [\r\n        \"latest_invoice.payment_intent\"\r\n    ],\r\n    \"enable_incomplete_payments\": \"false\",\r\n    // \"proration_date\": 1697038730,\r\n    \"proration_behavior\": \"always_invoice\"\r\n}",
+							"raw": "{\r\n    // Use \"SUBSCRIPTION ITEM ID\" from stripe to update the quantity of the product\r\n    // Use \"PRICE ID\" from stripe to add a new product into subscription\r\n    \"items\": [\r\n        {\r\n            \"price\": \"price_1NybtPLAtDnOXbR0u4PooKn1\",\r\n            \"quantity\": 40\r\n        },\r\n        {\r\n            \"price\": \"price_1NyspPLAtDnOXbR0kRqnvP4N\",\r\n            \"quantity\": 10\r\n        }\r\n    ],\r\n    \"expand\": [\r\n        \"latest_invoice.payment_intent\"\r\n    ],\r\n    \"enable_incomplete_payments\": \"false\",\r\n    // \"proration_date\": 1697038730,\r\n    \"proration_behavior\": \"always_invoice\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -334,8 +334,14 @@
 							"script": {
 								"exec": [
 									"const jsonData = JSON.parse(responseBody);\r",
-									"pm.collectionVariables.set(\"current_period_start\", jsonData.current_period_start);\r",
-									"pm.collectionVariables.set(\"current_period_end\", jsonData.current_period_end);"
+									"const current_period_start = new Date(jsonData.current_period_start * 1000);\r",
+									"const proration_date = new Date();\r",
+									"\r",
+									"proration_date.setDate(current_period_start.getDate());\r",
+									"\r",
+									"pm.collectionVariables.set(\"subscription_current_period_start\", jsonData.current_period_start);\r",
+									"pm.collectionVariables.set(\"subscription_current_period_end\", jsonData.current_period_end);\r",
+									"pm.collectionVariables.set(\"proration_date\", Math.floor(proration_date / 1000));"
 								],
 								"type": "text/javascript"
 							}
@@ -392,7 +398,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \r\n    // Use \"SUNSCRIPTION ITEM ID\" from stripe to update the quantity of the product\r\n    // Use \"PRICING API ID\" from stripe to add a new product into subscription \r\n    \"items\": [\r\n        {\r\n            \"id\": \"si_OmBL7N5EHMBXqB\",\r\n            \"quantity\": 50\r\n        }\r\n    ],\r\n    \"expand\": [\r\n        \"latest_invoice.payment_intent\"\r\n    ],\r\n    \"proration_behavior\": \"create_prorations\"\r\n}",
+							"raw": "{\r\n    \r\n    // Use \"SUBSCRIPTION ITEM ID\" from stripe to update the quantity of the product\r\n    // Use \"PRICE ID\" from stripe to add a new product into subscription \r\n    \"items\": [\r\n        {\r\n            \"id\": \"si_OmBL7N5EHMBXqB\",\r\n            \"quantity\": 50\r\n        }\r\n    ],\r\n    \"expand\": [\r\n        \"latest_invoice.payment_intent\"\r\n    ],\r\n    \"proration_behavior\": \"create_prorations\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -430,7 +436,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"subscription\": \"{{subscription_id}}\",\r\n    \"price\": \"price_1NybtPLAtDnOXbR0u4PooKn1\",\r\n    \"quantity\": 40,\r\n    \"proration_date\": \"{{subscription_current_period_start}}\",\r\n    \"proration_behavior\": \"create_prorations\"\r\n}",
+							"raw": "{\r\n    \"subscription\": \"{{subscription_id}}\",\r\n    \"price\": \"price_1NybtqLAtDnOXbR0hvFfujDa\",\r\n    \"quantity\": 40,\r\n    \"proration_date\": {{proration_date}},\r\n    \"proration_behavior\": \"create_prorations\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -648,6 +654,10 @@
 		},
 		{
 			"key": "subscription_current_period_end",
+			"value": ""
+		},
+		{
+			"key": "proration_date",
 			"value": ""
 		}
 	]
