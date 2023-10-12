@@ -64,7 +64,7 @@ router.put(
   ) => {
     try {
       const { params, body } = req;
-      // Use "SUNSCRIPTION ITEM ID" from stripe to update the quantity of the product
+      // Use "SUBSCRIPTION ITEM ID" from stripe to update the quantity of the product
       // Use "PRICING API ID" from stripe to add a new product into subscription
       const subscription = await stripe.subscriptions.update(
         params.subscriptionId,
