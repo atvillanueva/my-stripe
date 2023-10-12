@@ -20,7 +20,8 @@
 									"pm.collectionVariables.set(\"test_clock_id\", jsonData.id);\r",
 									"pm.collectionVariables.set(\"customer_id\", \"\");\r",
 									"pm.collectionVariables.set(\"subscription_id\", \"\");\r",
-									"pm.collectionVariables.set(\"subscription_schedule_id\", \"\");"
+									"pm.collectionVariables.set(\"subscription_schedule_id\", \"\");\r",
+									"pm.collectionVariables.set(\"subscription_schedule_current_phase\", \"\");"
 								],
 								"type": "text/javascript"
 							}
@@ -121,6 +122,7 @@
 									"pm.collectionVariables.set(\"customer_id\", \"\");\r",
 									"pm.collectionVariables.set(\"subscription_id\", \"\");\r",
 									"pm.collectionVariables.set(\"subscription_schedule_id\", \"\");\r",
+									"pm.collectionVariables.set(\"subscription_schedule_current_phase\", \"\");\r",
 									"pm.collectionVariables.set(\"frozen_time\", \"\");"
 								],
 								"type": "text/javascript"
@@ -260,7 +262,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    // Use \"SUNSCRIPTION ITEM ID\" from stripe to update the quantity of the product\r\n    // Use \"PRICING API ID\" from stripe to add a new product into subscription \r\n    \"items\": [\r\n        {\r\n            \"price\": \"price_1NybtPLAtDnOXbR0u4PooKn1\", // RTG Addon\r\n            \"quantity\": 40\r\n        },\r\n        {\r\n            \"price\": \"price_1NyspPLAtDnOXbR0kRqnvP4N\", // Creator Seats\r\n            \"quantity\": 10\r\n        }\r\n    ],\r\n    \"expand\": [\r\n        \"latest_invoice.payment_intent\"\r\n    ],\r\n    \"off_session\": \"true\",\r\n    \"enable_incomplete_payments\": \"false\",\r\n    \"proration_behavior\": \"always_invoice\" // create_prorations | always_invoice\r\n}",
+							"raw": "{\r\n    // Use \"SUNSCRIPTION ITEM ID\" from stripe to update the quantity of the product\r\n    // Use \"PRICING API ID\" from stripe to add a new product into subscription\r\n    \"items\": [\r\n        {\r\n            \"price\": \"price_1NybtPLAtDnOXbR0u4PooKn1\",\r\n            \"quantity\": 40\r\n        }\r\n    ],\r\n    \"expand\": [\r\n        \"latest_invoice.payment_intent\"\r\n    ],\r\n    \"enable_incomplete_payments\": \"false\",\r\n    // \"proration_date\": 1697038730,\r\n    \"proration_behavior\": \"always_invoice\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -415,7 +417,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"proration_behavior\": \"always_invoice\",\r\n    \"end_behavior\": \"release\",\r\n    \"phases\": [\r\n        {\r\n            \"proration_behavior\": \"always_invoice\",\r\n            \"start_date\": 1696807829,\r\n            \"end_date\": 1699486229,\r\n            \"items\": [\r\n                {\r\n                    \"price\": \"price_1NybrkLAtDnOXbR0qKXtLuQJ\", // Plan\r\n                    \"quantity\": 1\r\n                },\r\n                {\r\n                    \"price\": \"price_1NybtPLAtDnOXbR0u4PooKn1\", // RTG Addon\r\n                    \"quantity\": 40\r\n                },\r\n                {\r\n                    \"price\": \"price_1NyspPLAtDnOXbR0kRqnvP4N\", // Creator Seats\r\n                    \"quantity\": 10\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"proration_behavior\": \"always_invoice\",\r\n            \"items\": [\r\n                {\r\n                    \"price\": \"price_1NybrkLAtDnOXbR0qKXtLuQJ\", // Plan\r\n                    \"quantity\": 1\r\n                },\r\n                {\r\n                    \"price\": \"price_1NyspPLAtDnOXbR0kRqnvP4N\", // Creator Seats\r\n                    \"quantity\": 5\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"proration_behavior\": \"always_invoice\",\r\n    \"end_behavior\": \"release\",\r\n    \"phases\": [\r\n        {{subscription_schedule_current_phase}},\r\n        {\r\n            \"proration_behavior\": \"always_invoice\",\r\n            \"items\": [\r\n                {\r\n                    \"price\": \"price_1NybtPLAtDnOXbR0u4PooKn1\",\r\n                    \"quantity\": 40\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -437,6 +439,28 @@
 				},
 				{
 					"name": "Retrieve Subscription Schedule",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = JSON.parse(responseBody);\r",
+									"const phases = jsonData.phases;\r",
+									"const currentPhase = {\r",
+									"    items: phases[0].items.map((item) => ({\r",
+									"        price: item.price,\r",
+									"        quantity: item.quantity,\r",
+									"    })),\r",
+									"    start_date: phases[0].start_date,\r",
+									"    end_date: phases[0].end_date,\r",
+									"}\r",
+									"\r",
+									"pm.collectionVariables.set(\"subscription_schedule_current_phase\", JSON.stringify(currentPhase, null, 2));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -477,7 +501,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"customer\": \"{{customer_id}}\",\r\n    \"subscription\": \"{{subscription_id}}\",\r\n    \"subscription_items\": [\r\n        {\r\n            \"id\": \"si_Omg5EPfzWdtEbu\", // Plan\r\n            \"quantity\": 10\r\n        },\r\n        {\r\n            \"price\": \"price_1NybtPLAtDnOXbR0u4PooKn1\", // RTG Addon\r\n            \"quantity\": 40\r\n        },\r\n        {\r\n            \"price\": \"price_1NyspPLAtDnOXbR0kRqnvP4N\", // Creator Seats\r\n            \"quantity\": 10\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"customer\": \"{{customer_id}}\",\r\n    \"subscription\": \"{{subscription_id}}\",\r\n    \"subscription_proration_date\": 1698100850,\r\n    \"subscription_items\": [\r\n        {\r\n            \"id\": \"si_On26v0nuVKjoaH\", // Plan\r\n            \"quantity\": 2\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -496,8 +520,56 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Retrieve Upcoming Invoice Items",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"limit\": 5,\r\n    \"customer\": \"{{customer_id}}\",\r\n    \"subscription\": \"{{subscription_id}}\",\r\n    \"subscription_proration_date\": 1698100850,\r\n    \"subscription_proration_behavior\": \"always_invoice\",\r\n    \"subscription_items\": [\r\n        {\r\n            \"id\": \"si_On26v0nuVKjoaH\", // Plan\r\n            \"quantity\": 20\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/invoices/upcoming/items",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"invoices",
+								"upcoming",
+								"items"
+							]
+						}
+					},
+					"response": []
 				}
 			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	],
 	"variable": [
@@ -520,6 +592,11 @@
 		{
 			"key": "subscription_schedule_id",
 			"value": ""
+		},
+		{
+			"key": "subscription_schedule_current_phase",
+			"value": "",
+			"type": "string"
 		}
 	]
 }
