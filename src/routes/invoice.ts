@@ -17,25 +17,31 @@ router.post(
   ) => {
     try {
       const { body } = req;
-      // const invoice = await stripe.invoices.retrieveUpcoming({
-      // subscription_prorate: true,
-      // customer: req.body.customerId,
-      // subscription: req.body.subscriptionId,
-      // subscription_items: [
-      //   {
-      //     id: subscription.items.data[0].id,
-      //     clear_usage: true,
-      //     deleted: true,
-      //   },
-      //   {
-      //     price: process.env[req.body.newPriceId],
-      //     deleted: false,
-      //   },
-      // ],
-      // });
-      const invoice = await stripe.invoices.retrieveUpcoming(body);
+      const upcomingInvoice = await stripe.invoices.retrieveUpcoming(body);
 
-      res.send(invoice);
+      res.send(upcomingInvoice);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.post(
+  "/invoices/upcoming/items",
+  async (
+    req: Request<
+      never,
+      Stripe.Response<Stripe.ApiList<Stripe.InvoiceLineItem>>,
+      Stripe.InvoiceListUpcomingLinesParams 
+    >,
+    res,
+    next
+  ) => {
+    try {
+      const { body } = req;
+      const upcomingInvoiceLineItems = await stripe.invoices.listUpcomingLines(body);
+
+      res.send(upcomingInvoiceLineItems);
     } catch (error) {
       next(error);
     }
